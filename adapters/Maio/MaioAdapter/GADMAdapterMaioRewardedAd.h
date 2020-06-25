@@ -14,7 +14,7 @@
 
 #import <Foundation/Foundation.h>
 @import GoogleMobileAds;
-@import Maio;
+@import MaioCore;
 
 @interface GADMAdapterMaioRewardedAd : NSObject <GADMediationRewardedAd>
 
