@@ -10,14 +10,19 @@
 #import "GADMMaioConstants.h"
 #import "GADMMaioError.h"
 
-@import Maio;
+@import MaioCore;
 
-@interface GADMMaioInterstitialAdapter () <MaioDelegate>
+#define MaioInterstitial MaioRewarded
+#define MaioInterstitialLoadCallback MaioRewardedLoadCallback
+#define MaioInterstitialShowCallback MaioRewardedShowCallback
+
+@interface GADMMaioInterstitialAdapter () <MaioInterstitialLoadCallback, MaioInterstitialShowCallback>
 
 @property(nonatomic, weak) id<GADMAdNetworkConnector> interstitialAdConnector;
 
 @property(nonatomic, strong) NSString *mediaId;
 @property(nonatomic, strong) NSString *zoneId;
+@property(nonatomic, strong) MaioInterstitial *interstitial;
 
 @end
 
@@ -80,27 +85,10 @@
   if (!param) {
     return;
   }
-  self.mediaId = param[kGADMMaioAdapterMediaId];
   self.zoneId = param[kGADMMaioAdapterZoneId];
-  GADMAdapterMaioAdsManager *adManager =
-      [GADMAdapterMaioAdsManager getMaioAdsManagerByMediaId:self.mediaId];
+  MaioRequest *request = [[MaioRequest alloc] initWithZoneId:self.zoneId testMode:strongConnector.testMode bidData:nil];
 
-  // MaioInstance生成時にテストモードかどうかを指定する
-  [adManager setAdTestMode:strongConnector.testMode];
-
-  GADMMaioInterstitialAdapter *__weak weakSelf = self;
-  [adManager initializeMaioSDKWithCompletionHandler:^(NSError *error) {
-    if (error) {
-      [weakSelf.interstitialAdConnector adapter:weakSelf didFailAd:error];
-    } else {
-      // 生成済みのinstanceを得た場合、testモードを上書きする必要がある
-      [adManager setAdTestMode:weakSelf.interstitialAdConnector.testMode];
-      NSError *error = [adManager loadAdForZoneId:weakSelf.zoneId delegate:weakSelf];
-      if (error) {
-        [self.interstitialAdConnector adapter:self didFailAd:error];
-      }
-    }
-  }];
+  self.interstitial = [MaioInterstitial loadAdWithRequest:request callback:self];
 }
 
 /// When called, the adapter must remove itself as a delegate or notification
@@ -130,9 +118,7 @@
 /// and adapterDidDismissInterstitial: when the interstitial is being dismissed.
 - (void)presentInterstitialFromRootViewController:(UIViewController *)rootViewController {
   [self.interstitialAdConnector adapterWillPresentInterstitial:self];
-  GADMAdapterMaioAdsManager *adManager =
-      [GADMAdapterMaioAdsManager getMaioAdsManagerByMediaId:self.mediaId];
-  [adManager showAdForZoneId:self.zoneId rootViewController:rootViewController];
+  [self.interstitial showWithViewContext:rootViewController callback:self];
 }
 
 #pragma mark - MaioDelegate
@@ -213,6 +199,29 @@
 - (void)maioDidFail:(NSString *)zoneId reason:(MaioFailReason)reason {
   NSString *error = [GADMMaioError stringFromFailReason:reason];
   [self.interstitialAdConnector adapter:self didFailAd:[GADMMaioError errorWithDescription:error]];
+}
+
+#pragma mark - MaioInterstitialLoadCallback, MaioInterstitialShowCallback
+
+- (void)didLoad:(MaioInterstitial *)ad {
+  [self.interstitialAdConnector adapterDidReceiveInterstitial:self];
+}
+
+- (void)didFail:(MaioInterstitial *)ad errorCode:(NSInteger)errorCode {
+  NSString *description = [GADMMaioError stringFromErrorCode:errorCode];
+  NSError *error = [GADMMaioError errorWithDescription:description errorCode:errorCode];
+  [self.interstitialAdConnector adapter:self didFailAd:error];
+}
+
+- (void)didOpen:(MaioInterstitial *)ad {
+  // NOOP
+}
+
+- (void)didClose:(MaioInterstitial *)ad {
+  id<GADMAdNetworkConnector> strongConnector = self.interstitialAdConnector;
+
+  [strongConnector adapterWillDismissInterstitial:self];
+  [strongConnector adapterDidDismissInterstitial:self];
 }
 
 #pragma mark - private methods
