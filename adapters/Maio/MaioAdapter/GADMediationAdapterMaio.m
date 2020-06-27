@@ -14,6 +14,7 @@
 
 #import "GADMediationAdapterMaio.h"
 #import "GADMAdapterMaioRewardedAd.h"
+#import "GADMAdapterMaioInterstitialAd.h"
 #import "GADMAdapterMaioUtils.h"
 #import "GADMMaioConstants.h"
 #import "GADMMaioError.h"
@@ -22,6 +23,7 @@
 @interface GADMediationAdapterMaio ()
 
 @property(nonatomic) GADMAdapterMaioRewardedAd *rewardedAd;
+@property(nonatomic) GADMAdapterMaioInterstitialAd *interstitial;
 
 @end
 
@@ -90,6 +92,12 @@
   self.rewardedAd = [[GADMAdapterMaioRewardedAd alloc] init];
   [self.rewardedAd loadRewardedAdForAdConfiguration:adConfiguration
                                   completionHandler:completionHandler];
+}
+
+- (void)loadInterstitialForAdConfiguration:(GADMediationInterstitialAdConfiguration *)adConfiguration completionHandler:(GADMediationInterstitialLoadCompletionHandler)completionHandler {
+  self.interstitial = [[GADMAdapterMaioInterstitialAd alloc] init];
+  [self.interstitial loadInterstitialForAdConfiguration:adConfiguration
+                                      completionHandler:completionHandler];
 }
 
 @end
