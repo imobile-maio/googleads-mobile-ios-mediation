@@ -39,6 +39,8 @@
 		45E6353922309EAE006EB5A1 /* GADMediationAdapterMaio.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E6353722309EAE006EB5A1 /* GADMediationAdapterMaio.m */; };
 		45E6353C22309EFE006EB5A1 /* GADMAdapterMaioRewardedAd.h in Headers */ = {isa = PBXBuildFile; fileRef = 45E6353A22309EFE006EB5A1 /* GADMAdapterMaioRewardedAd.h */; };
 		45E6353D22309EFE006EB5A1 /* GADMAdapterMaioRewardedAd.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E6353B22309EFE006EB5A1 /* GADMAdapterMaioRewardedAd.m */; };
+		C2099EB324A742160007876E /* GADMAdapterMaioInterstitialAd.h in Headers */ = {isa = PBXBuildFile; fileRef = C2099EB124A742150007876E /* GADMAdapterMaioInterstitialAd.h */; };
+		C2099EB424A742160007876E /* GADMAdapterMaioInterstitialAd.m in Sources */ = {isa = PBXBuildFile; fileRef = C2099EB224A742150007876E /* GADMAdapterMaioInterstitialAd.m */; };
 		C29F39241FB996B400A32028 /* GADMMaioError.m in Sources */ = {isa = PBXBuildFile; fileRef = C29F391B1FB98B2E00A32028 /* GADMMaioError.m */; };
 		C29F39271FB996B400A32028 /* GADMMaioRewardedAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = C29F39201FB98B2F00A32028 /* GADMMaioRewardedAdapter.m */; };
 		C29F39281FB996CD00A32028 /* GADMMaioConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = C29F39181FB98B2E00A32028 /* GADMMaioConstants.h */; };
@@ -88,6 +90,8 @@
 		7D9552B11DC006E5005DCE8D /* Script_Framework.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Script_Framework.sh; sourceTree = "<group>"; };
 		7DE821BF1DB04B5000AA08CF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		7DFABB1D1DA8682C00322E02 /* libAdapter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAdapter.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2099EB124A742150007876E /* GADMAdapterMaioInterstitialAd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GADMAdapterMaioInterstitialAd.h; sourceTree = "<group>"; };
+		C2099EB224A742150007876E /* GADMAdapterMaioInterstitialAd.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GADMAdapterMaioInterstitialAd.m; sourceTree = "<group>"; };
 		C29F39181FB98B2E00A32028 /* GADMMaioConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GADMMaioConstants.h; sourceTree = "<group>"; };
 		C29F391B1FB98B2E00A32028 /* GADMMaioError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GADMMaioError.m; sourceTree = "<group>"; };
 		C29F391D1FB98B2E00A32028 /* GADMMaioError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GADMMaioError.h; sourceTree = "<group>"; };
@@ -140,6 +144,8 @@
 			children = (
 				45E6353A22309EFE006EB5A1 /* GADMAdapterMaioRewardedAd.h */,
 				45E6353B22309EFE006EB5A1 /* GADMAdapterMaioRewardedAd.m */,
+				C2099EB124A742150007876E /* GADMAdapterMaioInterstitialAd.h */,
+				C2099EB224A742150007876E /* GADMAdapterMaioInterstitialAd.m */,
 				00AC999022E923F300262599 /* GADMAdapterMaioUtils.h */,
 				00AC999122E923F300262599 /* GADMAdapterMaioUtils.m */,
 				45E6353622309EAE006EB5A1 /* GADMediationAdapterMaio.h */,
@@ -201,6 +207,7 @@
 				45E6353C22309EFE006EB5A1 /* GADMAdapterMaioRewardedAd.h in Headers */,
 				00AC999222E923F300262599 /* GADMAdapterMaioUtils.h in Headers */,
 				C29F39301FB9BEDC00A32028 /* GADMMaioInterstitialAdapter.h in Headers */,
+				C2099EB324A742160007876E /* GADMAdapterMaioInterstitialAd.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +310,7 @@
 				45E6353922309EAE006EB5A1 /* GADMediationAdapterMaio.m in Sources */,
 				00AC999322E923F300262599 /* GADMAdapterMaioUtils.m in Sources */,
 				C29F39241FB996B400A32028 /* GADMMaioError.m in Sources */,
+				C2099EB424A742160007876E /* GADMAdapterMaioInterstitialAd.m in Sources */,
 				C29F39311FB9BEDC00A32028 /* GADMMaioInterstitialAdapter.m in Sources */,
 				C29F39271FB996B400A32028 /* GADMMaioRewardedAdapter.m in Sources */,
 			);
