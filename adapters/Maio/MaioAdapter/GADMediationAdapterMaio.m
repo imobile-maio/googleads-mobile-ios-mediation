@@ -82,7 +82,7 @@
 
 - (void)collectSignalsForRequestParameters:(nonnull GADRTBRequestParameters *)params completionHandler:(nonnull GADRTBSignalCompletionHandler)completionHandler {
 
-  NSString *signal = @"";
+  NSString *signal = @"maio-signal";
   completionHandler(signal, nil);
 }
 
