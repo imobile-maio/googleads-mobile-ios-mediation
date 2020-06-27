@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #import "GADMediationAdapterMaio.h"
-#import "GADMAdapterMaioAdsManager.h"
 #import "GADMAdapterMaioRewardedAd.h"
 #import "GADMAdapterMaioUtils.h"
 #import "GADMMaioConstants.h"
@@ -30,32 +29,20 @@
 
 + (void)setUpWithConfiguration:(GADMediationServerConfiguration *)configuration
              completionHandler:(GADMediationAdapterSetUpCompletionBlock)completionHandler {
-  NSMutableSet *mediaIDs = [[NSMutableSet alloc] init];
+  NSMutableSet *zoneIDs = [[NSMutableSet alloc] init];
   for (GADMediationCredentials *cred in configuration.credentials) {
-    NSString *mediaID = cred.settings[kGADMMaioAdapterMediaId];
-    GADMAdapterMaioMutableSetAddObject(mediaIDs, mediaID);
+    NSString *zoneID = cred.settings[kGADMMaioAdapterZoneId];
+    GADMAdapterMaioMutableSetAddObject(zoneIDs, zoneID);
   }
 
-  if (!mediaIDs.count) {
+  if (!zoneIDs.count) {
     NSError *error = [GADMMaioError
-        errorWithDescription:@"Maio mediation configurations did not contain a valid media ID."];
+        errorWithDescription:@"Maio mediation configurations did not contain a valid zone ID."];
     completionHandler(error);
     return;
   }
 
-  NSString *mediaID = [mediaIDs anyObject];
-  if (mediaIDs.count > 1) {
-    NSLog(@"Found the following media IDs: %@. "
-          @"Please remove any media IDs you are not using from the AdMob UI.",
-          mediaIDs);
-    NSLog(@"Initializing Maio SDK with the media ID %@", mediaID);
-  }
-
-  GADMAdapterMaioAdsManager *manager =
-      [GADMAdapterMaioAdsManager getMaioAdsManagerByMediaId:mediaID];
-  [manager initializeMaioSDKWithCompletionHandler:^(NSError *error) {
-    completionHandler(error);
-  }];
+  completionHandler(nil);
 }
 
 + (GADVersionNumber)adSDKVersion {
