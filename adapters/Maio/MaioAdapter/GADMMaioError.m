@@ -22,35 +22,6 @@
   return error;
 }
 
-/**
- *  MaioFailReason の文字列表記を取得します。
- */
-+ (NSString *)stringFromFailReason:(MaioFailReason)failReason {
-  switch (failReason) {
-    case MaioFailReasonUnknown:
-      return @"Unknown";
-    case MaioFailReasonNetworkConnection:
-      return @"NetworkConnection";
-    case MaioFailReasonNetworkServer:
-      return @"NetworkServer";
-    case MaioFailReasonNetworkClient:
-      return @"NetworkClient";
-    case MaioFailReasonSdk:
-      return @"Sdk";
-    case MaioFailReasonDownloadCancelled:
-      return @"DownloadCancelled";
-    case MaioFailReasonAdStockOut:
-      return @"AdStockOut";
-    case MaioFailReasonVideoPlayback:
-      return @"VideoPlayback";
-    case MaioFailReasonIncorrectMediaId:
-      return @"InCorrectMediaId";
-    case MaioFailReasonIncorrectZoneId:
-      return @"InCorrectZoneId";
-    case MaioFailReasonNotFoundViewContext:
-      return @"NotFoundViewContext";
-  }
-}
 + (NSString *)stringFromErrorCode:(NSInteger)errorCode {
   if ([self codeIsAboutLoad:errorCode]) {
     return @"Error is about Load.";
