@@ -9,7 +9,7 @@
 #import "GADMAdapterMaioInterstitialAd.h"
 #import "GADMMaioConstants.h"
 #import "GADMMaioError.h"
-@import MaioCore;
+@import Maio;
 
 #define MaioInterstitial MaioRewarded
 #define MaioInterstitialLoadCallback MaioRewardedLoadCallback
