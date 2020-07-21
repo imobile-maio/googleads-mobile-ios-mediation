@@ -18,7 +18,7 @@
 #import "GADMAdapterMaioUtils.h"
 #import "GADMMaioConstants.h"
 #import "GADMMaioError.h"
-@import MaioCore;
+@import Maio;
 
 @interface GADMediationAdapterMaio ()
 
