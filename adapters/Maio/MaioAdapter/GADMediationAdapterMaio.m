@@ -32,14 +32,17 @@
 + (void)setUpWithConfiguration:(GADMediationServerConfiguration *)configuration
              completionHandler:(GADMediationAdapterSetUpCompletionBlock)completionHandler {
   NSMutableSet *zoneIDs = [[NSMutableSet alloc] init];
+  NSMutableSet *publisherIDs = [[NSMutableSet alloc] init];
   for (GADMediationCredentials *cred in configuration.credentials) {
     NSString *zoneID = cred.settings[kGADMMaioAdapterZoneId];
     GADMAdapterMaioMutableSetAddObject(zoneIDs, zoneID);
+    NSString *publisherID = cred.settings[kGADMMaioAdapterPublisherId];
+    GADMAdapterMaioMutableSetAddObject(publisherIDs, publisherID);
   }
 
-  if (!zoneIDs.count) {
+  if (zoneIDs.count == 0 && publisherIDs.count == 0) {
     NSError *error = [GADMMaioError
-        errorWithDescription:@"Maio mediation configurations did not contain a valid zone ID."];
+        errorWithDescription:@"Maio mediation configurations did not contain valid zone ID and publisher ID."];
     completionHandler(error);
     return;
   }
