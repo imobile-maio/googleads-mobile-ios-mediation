@@ -18,7 +18,6 @@
 #import "GADMAdapterMaioUtils.h"
 #import "GADMMaioConstants.h"
 #import "GADMMaioError.h"
-@import Maio;
 
 @interface GADMediationAdapterMaio ()
 
@@ -51,7 +50,7 @@
 }
 
 + (GADVersionNumber)adSDKVersion {
-  NSString *versionString = [[MaioVersion shared] toString];
+  NSString *versionString = @"2.0.0";
   NSArray *versionComponents = [versionString componentsSeparatedByString:@"."];
 
   GADVersionNumber version = {0};

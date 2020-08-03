@@ -9,13 +9,12 @@
 #import "GADMAdapterMaioInterstitialAd.h"
 #import "GADMMaioConstants.h"
 #import "GADMMaioError.h"
-@import Maio;
+
+@class MaioRewarded;
 
 #define MaioInterstitial MaioRewarded
-#define MaioInterstitialLoadCallback MaioRewardedLoadCallback
-#define MaioInterstitialShowCallback MaioRewardedShowCallback
 
-@interface GADMAdapterMaioInterstitialAd () <MaioInterstitialLoadCallback, MaioInterstitialShowCallback>
+@interface GADMAdapterMaioInterstitialAd ()
 
 @property(nonatomic, copy) GADMediationInterstitialLoadCompletionHandler completionHandler;
 @property(nonatomic, weak) id<GADMediationInterstitialAdEventDelegate> adEventDelegate;
@@ -31,12 +30,38 @@
   self.completionHandler = completionHandler;
   _zoneId = adConfiguration.credentials.settings[kGADMMaioAdapterZoneId];
 
-  MaioRequest *request = [[MaioRequest alloc] initWithZoneId:self.zoneId testMode:adConfiguration.isTestRequest bidData:adConfiguration.bidResponse];
-  self.interstitial = [MaioInterstitial loadAdWithRequest:request callback:self];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    BOOL stubComplete = kGADMAdapterMaioStubLoadComplete;
+    if (stubComplete) {
+      [self didLoad:nil];
+    } else {
+      [self didFail:nil errorCode:10000];
+    }
+  });
 }
 
 - (void)presentFromViewController:(nonnull UIViewController *)viewController {
-  [self.interstitial showWithViewContext:viewController callback:self];
+
+  UIViewController *dummyViewController = [UIViewController new];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    BOOL stubComplete = kGADMAdapterMaioStubPresentComplete;
+    if (stubComplete) {
+      [viewController presentViewController:dummyViewController animated:YES completion:nil];
+
+      [self didOpen:nil];
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [dummyViewController dismissViewControllerAnimated:YES completion:nil];
+        [self didClose:nil];
+      });
+
+    } else {
+      [viewController presentViewController:dummyViewController animated:YES completion:nil];
+      [self didOpen:nil];
+      [self didFail:nil errorCode:20000];
+      [dummyViewController dismissViewControllerAnimated:YES completion:nil];
+      [self didClose:nil];
+    }
+  });
 }
 
 #pragma mark - MaioInterstitialLoadCallback MaioInterstitialShowCallback

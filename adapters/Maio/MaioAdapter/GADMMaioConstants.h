@@ -21,4 +21,9 @@ static NSString *const kGADMMaioAdapterZoneId = @"zoneId";
 /// Maio publisher ID
 static NSString *const kGADMMaioAdapterPublisherId = @"publisherId";
 
+
+// stub
+static const BOOL kGADMAdapterMaioStubLoadComplete = true;
+static const BOOL kGADMAdapterMaioStubPresentComplete = true;
+
 #endif /* GADMMaioConstants_h */

@@ -16,14 +16,16 @@
 #import "GADMMaioConstants.h"
 #import "GADMMaioError.h"
 
-@interface GADMAdapterMaioRewardedAd () <MaioRewardedLoadCallback, MaioRewardedShowCallback>
+@interface GADMAdapterMaioRewardedAd ()
 
 @property(nonatomic, copy) GADMediationRewardedLoadCompletionHandler completionHandler;
 @property(nonatomic, weak) id<GADMediationRewardedAdEventDelegate> adEventDelegate;
 @property(nonatomic, copy) NSString *zoneId;
-@property(nonatomic, strong) MaioRewarded *rewarded;
 
 @end
+
+@class MaioRewarded;
+@class RewardData;
 
 @implementation GADMAdapterMaioRewardedAd
 
@@ -33,13 +35,40 @@
   self.completionHandler = completionHandler;
   _zoneId = adConfiguration.credentials.settings[kGADMMaioAdapterZoneId];
 
-  MaioRequest *request = [[MaioRequest alloc] initWithZoneId:self.zoneId testMode:adConfiguration.isTestRequest bidData:adConfiguration.bidResponse];
-  self.rewarded = [MaioRewarded loadAdWithRequest:request callback:self];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    BOOL stubComplete = kGADMAdapterMaioStubLoadComplete;
+    if (stubComplete) {
+      [self didLoad:nil];
+    } else {
+      [self didFail:nil errorCode:10000];
+    }
+  });
 }
 
 - (void)presentFromViewController:(nonnull UIViewController *)viewController {
   [self.adEventDelegate willPresentFullScreenView];
-  [self.rewarded showWithViewContext:viewController callback:self];
+
+  UIViewController *dummyViewController = [UIViewController new];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    BOOL stubComplete = kGADMAdapterMaioStubPresentComplete;
+    if (stubComplete) {
+      [viewController presentViewController:dummyViewController animated:YES completion:nil];
+
+      [self didOpen:nil];
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self didReward:nil reward:nil];
+        [dummyViewController dismissViewControllerAnimated:YES completion:nil];
+        [self didClose:nil];
+      });
+
+    } else {
+      [viewController presentViewController:dummyViewController animated:YES completion:nil];
+      [self didOpen:nil];
+      [self didFail:nil errorCode:20000];
+      [dummyViewController dismissViewControllerAnimated:YES completion:nil];
+      [self didClose:nil];
+    }
+  });
 }
 
 #pragma mark - MaioRewardedLoadCallback MaioRewardedShowCallback
@@ -75,7 +104,8 @@
 }
 
 - (void)didReward:(MaioRewarded *)ad reward:(RewardData *)reward {
-  GADAdReward *gReward = [[GADAdReward alloc] initWithRewardType:reward.value rewardAmount:[NSDecimalNumber one]];
+  NSString *type = @"type";
+  GADAdReward *gReward = [[GADAdReward alloc] initWithRewardType:type rewardAmount:[NSDecimalNumber one]];
   [self.adEventDelegate didRewardUserWithReward:gReward];
 }
 @end
