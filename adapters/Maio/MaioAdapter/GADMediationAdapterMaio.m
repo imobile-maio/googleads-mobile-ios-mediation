@@ -13,16 +13,17 @@
 // limitations under the License.
 
 #import "GADMediationAdapterMaio.h"
-#import "GADMAdapterMaioAdsManager.h"
 #import "GADMAdapterMaioRewardedAd.h"
+#import "GADMAdapterMaioInterstitialAd.h"
 #import "GADMAdapterMaioUtils.h"
 #import "GADMMaioConstants.h"
 #import "GADMMaioError.h"
 @import Maio;
 
-@interface GADMediationAdapterMaio () <MaioDelegate>
+@interface GADMediationAdapterMaio ()
 
 @property(nonatomic) GADMAdapterMaioRewardedAd *rewardedAd;
+@property(nonatomic) GADMAdapterMaioInterstitialAd *interstitial;
 
 @end
 
@@ -30,36 +31,27 @@
 
 + (void)setUpWithConfiguration:(GADMediationServerConfiguration *)configuration
              completionHandler:(GADMediationAdapterSetUpCompletionBlock)completionHandler {
-  NSMutableSet *mediaIDs = [[NSMutableSet alloc] init];
+  NSMutableSet *zoneIDs = [[NSMutableSet alloc] init];
+  NSMutableSet *publisherIDs = [[NSMutableSet alloc] init];
   for (GADMediationCredentials *cred in configuration.credentials) {
-    NSString *mediaID = cred.settings[kGADMMaioAdapterMediaId];
-    GADMAdapterMaioMutableSetAddObject(mediaIDs, mediaID);
+    NSString *zoneID = cred.settings[kGADMMaioAdapterZoneId];
+    GADMAdapterMaioMutableSetAddObject(zoneIDs, zoneID);
+    NSString *publisherID = cred.settings[kGADMMaioAdapterPublisherId];
+    GADMAdapterMaioMutableSetAddObject(publisherIDs, publisherID);
   }
 
-  if (!mediaIDs.count) {
+  if (zoneIDs.count == 0 && publisherIDs.count == 0) {
     NSError *error = [GADMMaioError
-        errorWithDescription:@"Maio mediation configurations did not contain a valid media ID."];
+        errorWithDescription:@"Maio mediation configurations did not contain valid zone ID and publisher ID."];
     completionHandler(error);
     return;
   }
 
-  NSString *mediaID = [mediaIDs anyObject];
-  if (mediaIDs.count > 1) {
-    NSLog(@"Found the following media IDs: %@. "
-          @"Please remove any media IDs you are not using from the AdMob UI.",
-          mediaIDs);
-    NSLog(@"Initializing Maio SDK with the media ID %@", mediaID);
-  }
-
-  GADMAdapterMaioAdsManager *manager =
-      [GADMAdapterMaioAdsManager getMaioAdsManagerByMediaId:mediaID];
-  [manager initializeMaioSDKWithCompletionHandler:^(NSError *error) {
-    completionHandler(error);
-  }];
+  completionHandler(nil);
 }
 
 + (GADVersionNumber)adSDKVersion {
-  NSString *versionString = [Maio sdkVersion];
+  NSString *versionString = [[MaioVersion shared] toString];
   NSArray *versionComponents = [versionString componentsSeparatedByString:@"."];
 
   GADVersionNumber version = {0};
@@ -91,12 +83,24 @@
   return version;
 }
 
+- (void)collectSignalsForRequestParameters:(nonnull GADRTBRequestParameters *)params completionHandler:(nonnull GADRTBSignalCompletionHandler)completionHandler {
+
+  NSString *signal = @"maio-signal";
+  completionHandler(signal, nil);
+}
+
 - (void)loadRewardedAdForAdConfiguration:(GADMediationRewardedAdConfiguration *)adConfiguration
                        completionHandler:
                            (GADMediationRewardedLoadCompletionHandler)completionHandler {
   self.rewardedAd = [[GADMAdapterMaioRewardedAd alloc] init];
   [self.rewardedAd loadRewardedAdForAdConfiguration:adConfiguration
                                   completionHandler:completionHandler];
+}
+
+- (void)loadInterstitialForAdConfiguration:(GADMediationInterstitialAdConfiguration *)adConfiguration completionHandler:(GADMediationInterstitialLoadCompletionHandler)completionHandler {
+  self.interstitial = [[GADMAdapterMaioInterstitialAd alloc] init];
+  [self.interstitial loadInterstitialForAdConfiguration:adConfiguration
+                                      completionHandler:completionHandler];
 }
 
 @end

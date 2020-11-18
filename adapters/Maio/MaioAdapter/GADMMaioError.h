@@ -6,11 +6,14 @@
 //
 
 #import <Foundation/Foundation.h>
-@import Maio;
 
 @interface GADMMaioError : NSObject
 
 + (NSError *)errorWithDescription:(NSString *)description;
-+ (NSString *)stringFromFailReason:(MaioFailReason)failReason;
++ (NSError *)errorWithDescription:(NSString *)description errorCode:(NSInteger)errorCode;
++ (NSString *)stringFromErrorCode:(NSInteger)errorCode;
+
++ (BOOL)codeIsAboutLoad:(NSInteger)errorCode;
++ (BOOL)codeIsAboutShow:(NSInteger)errorCode;
 
 @end
